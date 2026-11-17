@@ -43,3 +43,31 @@ SELECT
   COUNT(*) - COUNT(DISTINCT id) AS duplicate_rows
 FROM `bigquery-public-data.thelook_ecommerce.order_items`
 WHERE created_at < '2026-11-01';
+
+/*------------------------------------
+Check 3: Orphaned records
+Why: Rows that point to a missing parent record would
+     make totals differ depending on which tables are joined. 
+Finding: 3a - 0 order_items without a matching order.
+         3b - 0 orders without a matching user.
+         All joins between order_items, orders, and users
+         are complete; no rows will be lost when joining.
+--------------------------------------*/
+SELECT
+  COUNT(*) AS orphan_items,
+FROM `bigquery-public-data.thelook_ecommerce.order_items` oi
+LEFT JOIN `bigquery-public-data.thelook_ecommerce.orders` o 
+  ON oi.order_id = o.order_id
+WHERE oi.created_at < '2026-11-01'
+  AND o.order_id IS NULL;
+
+SELECT 
+  COUNT(*) AS orphan_items,
+FROM `bigquery-public-data.thelook_ecommerce.orders` o
+LEFT JOIN `bigquery-public-data.thelook_ecommerce.users` u
+   ON o.user_id = u.id
+WHERE o.created_at < '2026-11-01'
+AND u.id IS NULL;
+
+
+   
