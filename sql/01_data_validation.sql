@@ -22,3 +22,24 @@ SELECT
   MIN(created_at) AS first_order,
   MAX(created_at) AS last_order
 FROM `bigquery-public-data.thelook_ecommerce.orders`;
+/*--------------------------------------------
+Check 2:    Duplicate IDs in orders and order_items
+   Why:     Duplicate rows would inflate order counts and
+            revenue in every later analysis.
+   Finding: 2A: 117054 rows, 117054 unique orders, 0 duplicates
+            2B: 169886 rows, 169886 unique items, 0 duplicates.
+            Both tables are safe to count without de-duplicating.
+-----------------------------------------------*/
+SELECT
+  COUNT(*) AS total_rows,
+  COUNT(DISTINCT order_id) AS unique_orders,
+  COUNT(*) - COUNT(DISTINCT order_id) AS duplicate_rows
+FROM `bigquery-public-data.thelook_ecommerce.orders`
+WHERE created_at < '2026-11-01';
+
+SELECT
+  COUNT(*) AS total_rows,
+  COUNT(DISTINCT id) AS unique_items,
+  COUNT(*) - COUNT(DISTINCT id) AS duplicate_rows
+FROM `bigquery-public-data.thelook_ecommerce.order_items`
+WHERE created_at < '2026-11-01';
