@@ -70,4 +70,22 @@ WHERE o.created_at < '2026-11-01'
 AND u.id IS NULL;
 
 
-   
+/*------------------------------------
+Check 4:Order item status values and revenue definition
+   Why: Revenue must exclude sales that didn't happen.
+         This sets the revenue rule used in every later file.
+Finding: 5 statuses across 169,886 items ($10.13M gross).
+         Cancelled (15% of value) and Returned (10%) are
+         excluded. Revenue rule for all later files:
+         status IN ('Shipped', 'Complete', 'Processing').
+         Net revenue = $7.58M (74.9% of gross).
+         Note: Processing items are booked but not yet
+         shipped; some may still be cancelled.
+--------------------------------------*/   
+SELECT status,
+  COUNT(*) AS num_items,
+  ROUND(SUM(sale_price), 2) AS total_sale_price
+FROM `bigquery-public-data.thelook_ecommerce.order_items`
+WHERE created_at < '2026-11-01'
+GROUP BY status
+ORDER BY num_items DESC;
