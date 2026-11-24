@@ -61,12 +61,14 @@ FROM monthly
 ORDER BY order_month;
 
 /*----------------------------------------------------
-Query 2: Year-over-year revenue growth
+Query 2: Query 2: Year-over-year revenue growth
    Why:     Tests the brief's premise that growth has slowed.
             YoY comparison removes seasonality.
-   Finding: Premise not supported. October YoY growth accelerated
-            each year: +33.6% (2023), +42.9% (2024), +50.8% (2025),
-            +129.8% (2026). The 2026 jump needs verification
-            (see last-12-months check). Project question reframed:
-            what is driving the acceleration, and is it healthy?
+   Finding: Premise not supported. YoY growth rose from ~55%
+            (Nov 2025 - May 2026) to ~75-83% (Jun - Sep 2026).
+            Oct 2026 shows +129.8%, inflated by a weak Oct 2025
+            base ($162.9K, below Sep 2025) plus a +25.6% MoM
+            spike; treated as an outlier, not the trend.
+            Question reframed: what is driving the acceleration,
+            and is it healthy growth?
 ----------------------------------------------------------------*/
